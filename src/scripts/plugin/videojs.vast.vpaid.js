@@ -71,12 +71,12 @@ module.exports = function VASTPlugin(options) {
 
   var totalMidrolls = utilities.isArray(settings.midrolls) ? settings.midrolls.length : 0;
   adsRemaining += settings.midrolls.length;
-  
+
   // when we've played a midroll, push true
   var midrollsPlayed = [];
 
   // flag state for if an ad is playing or not.
-  // used to determine behaviour on events as some events 
+  // used to determine behaviour on events as some events
   // will be 'duped' between ad and content
   var adIsPlaying = false;
 
@@ -112,11 +112,6 @@ module.exports = function VASTPlugin(options) {
       }, 0);
     });
   }
-
-  
-
-
-
 
   if (settings.preroll && utilities.isBool(settings.preroll)) {
 
@@ -158,14 +153,14 @@ module.exports = function VASTPlugin(options) {
 
     player.one('vast.postrollGo', function () {
       if (player.currentTime() > player.duration() - 1) {
-        tryToPlayRollAd(); 
+        tryToPlayRollAd();
         adsRemaining--;
       }
     });
   }
 
   function validateMidrolls(midrolls) {
-    
+
     // it should be an array
     if (!utilities.isArray(midrolls)) {
       return false;
@@ -187,7 +182,7 @@ module.exports = function VASTPlugin(options) {
 
   function timeupdateWatcher() {
     if (adIsPlaying) {
-      // this isn't always taken off, so this watcher 
+      // this isn't always taken off, so this watcher
       // keeps trucking along even though it shouldn't
       player.off('timeupdate', timeupdateWatcher);
     }
@@ -211,7 +206,7 @@ module.exports = function VASTPlugin(options) {
       midrollsPlayed.push(true);
 
 
-    } else if (player.currentTime() < settings.midrolls[currentMidrollIndex] && 
+    } else if (player.currentTime() < settings.midrolls[currentMidrollIndex] &&
         player.currentTime() > settings.midrolls[currentMidrollIndex]-lookAhead &&
         !player.paused() &&
         !adIsPlaying) {
@@ -401,7 +396,6 @@ module.exports = function VASTPlugin(options) {
     adsCanceled = true;
   }
 
-<<<<<<< HEAD
   function skipAd() {
     console.log('skipAd ................. called');
     player.trigger('vast.adSkip');
@@ -465,6 +459,10 @@ module.exports = function VASTPlugin(options) {
     }
 
     player.vast.vastResponse = vastResponse;
+    if (!vastResponse.hasLinear() && vastResponse.hasNonLinear()) {
+      cancelAds();
+      return;
+    }
     logger.debug ("calling adIntegrator.playAd() with vastResponse:", vastResponse);
     player.vast.adUnit = adIntegrator.playAd(vastResponse, callback);
 
@@ -527,13 +525,13 @@ module.exports = function VASTPlugin(options) {
 
   function trackAdError(error, vastResponse) {
     player.trigger({type: 'vast.adError', error: error});
-    
+
     if (adsRemaining === 0 || !settings.adsEnabled) {
-      cancelAds();  
+      cancelAds();
     } else {
       skipAd();
     }
-    
+
     logger.error ('AD ERROR:', error.message, error, vastResponse);
   }
 
