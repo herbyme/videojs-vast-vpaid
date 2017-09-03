@@ -335,6 +335,11 @@ module.exports = function VASTPlugin(options) {
     function preparePlayerForAd(next) {
       if (canPlayPrerollAd()) {
         snapshot = playerUtils.getPlayerSnapshot(player);
+        
+        if (window.MavenVX) {
+          window.MavenVX.clickPause = true;
+        }
+
         player.pause();
 
         addSpinnerIcon();
@@ -343,6 +348,10 @@ module.exports = function VASTPlugin(options) {
           next(null);
         } else {
           playerUtils.once(player, ['playing'], function() {
+            if (window.MavenVX) {
+              window.MavenVX.clickPause = true;
+            }
+
             player.pause();
             next(null);
           });
@@ -496,6 +505,10 @@ module.exports = function VASTPlugin(options) {
         // Ignore ended event if the Ad time was not 'near' the end
         // and revert time to the previous 'valid' time
         if ((player.duration() - previousTime) > PROGRESS_THRESHOLD) {
+          if (window.MavenVX) {
+            window.MavenVX.clickPause = true;
+          }
+
           player.pause(true); // this reduce the video jitter if the IOS skip button is pressed
           player.play(true); // we need to trigger the play to put the video element back in a valid state
           player.currentTime(previousTime);
@@ -508,6 +521,10 @@ module.exports = function VASTPlugin(options) {
         if (progressDelta > PROGRESS_THRESHOLD) {
           skipad_attempts += 1;
           if (skipad_attempts >= 2) {
+            if (window.MavenVX) {
+              window.MavenVX.clickPause = true;
+            }
+
             player.pause(true);
           }
           player.currentTime(previousTime);
