@@ -337,7 +337,7 @@ module.exports = function VASTPlugin(options) {
         snapshot = playerUtils.getPlayerSnapshot(player);
         
         if (window.MavenVX) {
-          window.MavenVX.clickPause = true;
+          window.MavenVX.clickPause = false;
         }
 
         player.pause();
@@ -349,7 +349,7 @@ module.exports = function VASTPlugin(options) {
         } else {
           playerUtils.once(player, ['playing'], function() {
             if (window.MavenVX) {
-              window.MavenVX.clickPause = true;
+              window.MavenVX.clickPause = false;
             }
 
             player.pause();
@@ -506,7 +506,7 @@ module.exports = function VASTPlugin(options) {
         // and revert time to the previous 'valid' time
         if ((player.duration() - previousTime) > PROGRESS_THRESHOLD) {
           if (window.MavenVX) {
-            window.MavenVX.clickPause = true;
+            window.MavenVX.clickPause = false;
           }
 
           player.pause(true); // this reduce the video jitter if the IOS skip button is pressed
@@ -522,7 +522,7 @@ module.exports = function VASTPlugin(options) {
           skipad_attempts += 1;
           if (skipad_attempts >= 2) {
             if (window.MavenVX) {
-              window.MavenVX.clickPause = true;
+              window.MavenVX.clickPause = false;
             }
 
             player.pause(true);
