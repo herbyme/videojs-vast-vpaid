@@ -58,6 +58,10 @@ VASTIntegrator.prototype.playAd = function playAd(vastResponse, callback) {
     _src: null,
     type: 'VAST',
     pauseAd: function () {
+      if (window.MavenVX) {
+        window.MavenVX.clickPause = false;
+      }
+
       that.player.pause(true);
     },
 
