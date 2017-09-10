@@ -440,8 +440,9 @@ VPAIDIntegrator.prototype._addSkipButton = function (adUnit, vastResponse, next)
   }
 
   function addSkipButton(player) {
-    skipButton = createSkipButton(player);
-    player.el().appendChild(skipButton);
+    /* TODO: Removed for MavenVX */
+    // skipButton = createSkipButton(player);
+    // player.el().appendChild(skipButton);
   }
 
   function removeSkipButton() {
