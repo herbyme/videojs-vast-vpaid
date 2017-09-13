@@ -1,6 +1,7 @@
 'use strict';
 
 var Linear = require('./Linear');
+var TrackingEvent = require('./TrackingEvent');
 var Companion = require('./Companion');
 var NonLinear = require('./NonLinear');
 var utilities = require('../../utils/utilityFunctions');
@@ -32,12 +33,27 @@ function Creative(creativeJTree) {
   }
 
   if (creativeJTree.nonLinearAds && creativeJTree.nonLinearAds.nonLinear) {
+    var trackings = [];
+    var trackingEvents = creativeJTree.nonLinearAds.trackingEvents
+    && creativeJTree.nonLinearAds.trackingEvents.tracking;
+    if (utilities.isDefined(trackingEvents)) {
+      trackingEvents = utilities.isArray(trackingEvents) ? trackingEvents : [trackingEvents];
+      trackingEvents.forEach(function (trackingData) {
+        trackings.push(new TrackingEvent(trackingData));
+      });
+    }
+
     var nonLinears = [];
     var nonLinearAds = creativeJTree.nonLinearAds && creativeJTree.nonLinearAds.nonLinear;
     if (utilities.isDefined(nonLinearAds)) {
       nonLinearAds = utilities.isArray(nonLinearAds) ? nonLinearAds : [nonLinearAds];
       nonLinearAds.forEach(function (nonLinearAdsChild) {
-        nonLinears.push(new NonLinear(nonLinearAdsChild));
+        var nonLinear = new NonLinear(nonLinearAdsChild);
+        if (trackings.length > 0) {
+          nonLinear.trackingEvents = trackings;
+        }
+
+        nonLinears.push(nonLinear);
       });
     }
 
