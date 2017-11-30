@@ -335,7 +335,7 @@ module.exports = function VASTPlugin(options) {
     function preparePlayerForAd(next) {
       if (canPlayPrerollAd()) {
         snapshot = playerUtils.getPlayerSnapshot(player);
-        
+
         if (window.MavenVX) {
           window.MavenVX.clickPause = false;
         }
@@ -431,9 +431,23 @@ module.exports = function VASTPlugin(options) {
    }
 
   function getVastResponse(callback) {
+    // Cache-buster regex on last parameter
+    var cacheBusterRegex = /\=[0-9]*$/;
+    var newTimestamp = Math.round(new Date().getTime() / 1000);
+    var bustedCacheAdTag;
+
     if (utilities.isArray(settings.adTagUrl) && utilities.isDefined(settings.adTagUrl[0])) {
+      if (settings.adTags.length >= 2) {
+        settings.adTagUrl[1] =
+        settings.adTagUrl[1].replace(cacheBusterRegex, '=' + newTimestamp.toString());
+      }
       vast.getVASTResponse(settings.adTagUrl ? settings.adTagUrl.shift() : settings.adTagXML, callback);
     } else {
+      var bustedCacheAdTag = settings.adTagUrl();
+      bustedCacheAdTag =
+      bustedCacheAdTag.replace(cacheBusterRegex, '=' + newTimestamp.toString());
+      settings.adTagUrl = utilities.echoFn(bustedCacheAdTag);
+
       vast.getVASTResponse(settings.adTagUrl ? settings.adTagUrl() : settings.adTagXML, callback);
     }
   }
